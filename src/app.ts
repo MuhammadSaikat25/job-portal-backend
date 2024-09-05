@@ -5,6 +5,7 @@ import { userRoute } from "./app/modules/users/user.route";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { companyRoute } from "./app/modules/employer/create-company/company.route";
+import { jobRoute } from "./app/modules/employer/post-job/job.route";
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
@@ -21,7 +22,7 @@ app.use(
 app.get("/", (_, res) => {
   res.send("Looking for job ?");
 });
-app.use("/api/v1", userRoute,companyRoute);
+app.use("/api/v1", userRoute,companyRoute,jobRoute);
 
 app.use(globalErrorHandler);
 app.use(notFound);

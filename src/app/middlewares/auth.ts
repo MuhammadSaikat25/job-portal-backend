@@ -3,8 +3,12 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import AppError from "../error/AppError";
 import { UserModel } from "../modules/users/user.model";
 
+export interface TRequest extends Request {
+  user?: JwtPayload;
+}
+
 export const authValidation = (...UserRole: string[]) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: TRequest, res: Response, next: NextFunction) => {
     try {
       const token = req.headers.authorization;
 

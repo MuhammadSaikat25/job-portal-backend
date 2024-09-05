@@ -5,13 +5,10 @@ import bcrypt from "bcryptjs";
 const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const userSchema = new Schema<TUser>(
   {
-    name: {
-      firstName: { type: String, required: true },
-      lastName: { type: String, required: true },
-    },
+    name: String,
     role: {
       type: String,
-      enum: ["admin", "candidate", "employee"],
+      enum: ["admin", "candidate", "employer"],
       required: true,
     },
     email: {

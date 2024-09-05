@@ -11,6 +11,12 @@ const createCompany = async (Payload: TCompany) => {
   );
   return result
 };
+
+const getMyCompany=async(email:string)=>{
+  const result=await CompanyModal.findOne({email})
+  return result
+}
 export const companyService = {
   createCompany,
+  getMyCompany
 };
