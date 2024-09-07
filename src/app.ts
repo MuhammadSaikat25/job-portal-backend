@@ -7,6 +7,8 @@ import cors from "cors";
 import { companyRoute } from "./app/modules/employer/create-company/company.route";
 import { jobRoute } from "./app/modules/employer/post-job/job.route";
 import { candidateProfileRoute } from "./app/modules/candidate/create-profile/profile.route";
+import { resumeRouter } from "./app/modules/candidate/resume/resume.route";
+
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
@@ -23,7 +25,14 @@ app.use(
 app.get("/", (_, res) => {
   res.send("Looking for job ?");
 });
-app.use("/api/v1", userRoute, companyRoute, jobRoute, candidateProfileRoute);
+app.use(
+  "/api/v1",
+  userRoute,
+  companyRoute,
+  jobRoute,
+  candidateProfileRoute,
+  resumeRouter
+);
 
 app.use(globalErrorHandler);
 app.use(notFound);

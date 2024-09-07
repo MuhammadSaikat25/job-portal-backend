@@ -11,7 +11,11 @@ const createCandidateProfile=async(PlayLoad:TCandidateProfile)=>{
       );
     return result
 }
-
+const getCandidateProfile=async(email:string)=>{
+  const result=candidateProfileModel.findOne({email})
+  return result
+}
 export const candidateProfileService={
-    createCandidateProfile
+    createCandidateProfile,
+    getCandidateProfile
 }

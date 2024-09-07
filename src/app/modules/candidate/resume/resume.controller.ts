@@ -1,29 +1,28 @@
 import { RequestHandler } from "express";
 import httpStatus from "http-status";
-import { candidateProfileService } from "./profile.service";
+import { resumeService } from "./resume.service";
 import { TRequest } from "../../../middlewares/auth";
 
-const createCandidateProfile: RequestHandler = async (req, res, next) => {
+const createResume: RequestHandler = async (req, res, next) => {
   try {
-    const result = await candidateProfileService.createCandidateProfile(
-      req.body
-    );
+    const result = await resumeService.createResume(req.body);
     res.status(httpStatus.OK).json({
       success: true,
       data: result,
     });
   } catch (error) {
     res.status(httpStatus.BAD_REQUEST).json({
-      success: false,
+      success: true,
       data: error,
     });
   }
 };
 
-const getCandidateProfile:RequestHandler=async(req:TRequest,res,next)=>{
+
+const getMyResume:RequestHandler=async(req:TRequest,res,next)=>{
   const email=req?.user!.email
   try {
-    const result=await candidateProfileService.getCandidateProfile(email)
+    const result=await resumeService.getMyResume(email)
     res.status(httpStatus.OK).json({
       success:true,
       data:result
@@ -35,7 +34,7 @@ const getCandidateProfile:RequestHandler=async(req:TRequest,res,next)=>{
     })
   }
 }
-export const candidateProfileController = {
-  createCandidateProfile,
-  getCandidateProfile
+export const resumeController = {
+  createResume,
+  getMyResume
 };
