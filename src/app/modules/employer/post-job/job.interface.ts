@@ -10,7 +10,7 @@ export interface TJob {
   jobType: string;
   position: string;
   responsibilities: string[];
-  salary: string;
+  salary: number;
   skills: string[];
   title: string;
 }

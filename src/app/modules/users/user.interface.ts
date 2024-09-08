@@ -1,6 +1,6 @@
 export interface TUser {
   name: string;
-  role: "admin" | "candidate" | "employee";
+  role: "admin" | "candidate" | "employer";
   email: string;
   password: string;
   avatar: string;

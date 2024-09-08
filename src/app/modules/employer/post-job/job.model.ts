@@ -16,7 +16,7 @@ const JobSchema = new Schema<TJob>(
     jobType: { type: String, required: true },
     position: { type: String, required: true },
     responsibilities: { type: [String], required: true },
-    salary: { type: String, required: true },
+    salary: { type: Number, required: true },
     skills: { type: [String], required: true },
     title: { type: String, required: true },
   },

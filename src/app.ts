@@ -8,6 +8,7 @@ import { companyRoute } from "./app/modules/employer/create-company/company.rout
 import { jobRoute } from "./app/modules/employer/post-job/job.route";
 import { candidateProfileRoute } from "./app/modules/candidate/create-profile/profile.route";
 import { resumeRouter } from "./app/modules/candidate/resume/resume.route";
+import { jobRouter } from "./app/modules/jobs/job.route";
 
 const app = express();
 app.use(express.json());
@@ -31,7 +32,8 @@ app.use(
   companyRoute,
   jobRoute,
   candidateProfileRoute,
-  resumeRouter
+  resumeRouter,
+  jobRouter
 );
 
 app.use(globalErrorHandler);
