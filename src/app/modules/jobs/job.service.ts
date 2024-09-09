@@ -17,11 +17,30 @@ const getAllJob = async (query: any) => {
     };
   }
 
-
   const result = await jobModel.find(filter).populate("company");
   return result;
 };
 
+const getSingleJob = async (id: string) => {
+ 
+  const result = await jobModel.findById(id).populate("company");
+  if (!result) {
+    throw new Error("Job not found");
+  }
+
+  const jobTitle = new RegExp(result.title, "i");
+  const Jobs = await jobModel.find({ title: jobTitle }).populate("company");
+  const matchingJobs = Jobs.filter(
+    (job: any) => job._id.toString() == id.toString()
+  );
+
+  return {
+    singleJob: result,
+    matchingJobs
+  };
+};
+
 export const jobService = {
   getAllJob,
+  getSingleJob,
 };
