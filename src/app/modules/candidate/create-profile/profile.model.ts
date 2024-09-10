@@ -7,6 +7,7 @@ const candidateProfileSchema = new Schema<TCandidateProfile>(
       type: String,
       required: true,
     },
+    image: String,
     age: {
       type: Number,
       required: true,

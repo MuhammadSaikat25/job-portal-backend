@@ -13,7 +13,7 @@ const createResume = async (playLoad: TResume) => {
  
 };
 const getMyResume = async (email: string) => {
-  const result = await ResumeModel.findOne({ email });
+  const result = await ResumeModel.findOne({ email }).populate('candidateProfile');
   return result;
 };
 export const resumeService = {

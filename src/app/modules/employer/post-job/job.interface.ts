@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 
 export interface TJob {
-    company:Types.ObjectId
+  company: Types.ObjectId;
   country: string;
   deadline: string;
   description: string;
@@ -13,4 +13,5 @@ export interface TJob {
   salary: number;
   skills: string[];
   title: string;
+  applied:Number
 }

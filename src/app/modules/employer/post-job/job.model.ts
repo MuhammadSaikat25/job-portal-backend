@@ -8,6 +8,7 @@ const JobSchema = new Schema<TJob>(
       required: true,
       ref: "company",
     },
+    applied:{type:Number,default:0},
     country: { type: String, required: true },
     deadline: { type: String, required: true },
     description: { type: String, required: true },

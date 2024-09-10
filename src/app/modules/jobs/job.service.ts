@@ -1,4 +1,6 @@
 import { jobModel } from "../employer/post-job/job.model";
+import { TAppliedJOb } from "./job.interface";
+import { appliedJobModel } from "./job.model";
 
 const getAllJob = async (query: any) => {
   const { jobType, jobPosition, experience, salary } = query;
@@ -22,7 +24,6 @@ const getAllJob = async (query: any) => {
 };
 
 const getSingleJob = async (id: string) => {
- 
   const result = await jobModel.findById(id).populate("company");
   if (!result) {
     throw new Error("Job not found");
@@ -36,11 +37,36 @@ const getSingleJob = async (id: string) => {
 
   return {
     singleJob: result,
-    matchingJobs
+    matchingJobs,
   };
 };
 
+const appliedJOb = async (payload: TAppliedJOb) => {
+  const result = await appliedJobModel.create(payload);
+
+  const job = await jobModel.findById(payload.job);
+
+  if (!job) {
+    return;
+  }
+
+  const currentApplications = job.applied ?? 0;
+
+  await jobModel.findByIdAndUpdate(payload.job, {
+    applied: Number(currentApplications) + 1,
+  });
+
+  return result;
+};
+
+const singleAppliedJob = async (id: string, email: string) => {
+  const allAppliedJob = await appliedJobModel.find();
+  const result=allAppliedJob.find((job)=>job.job.toString()===id)
+  return result;
+};
 export const jobService = {
   getAllJob,
   getSingleJob,
+  appliedJOb,
+  singleAppliedJob,
 };

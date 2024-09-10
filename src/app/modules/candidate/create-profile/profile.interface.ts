@@ -10,4 +10,5 @@ export interface TCandidateProfile {
   jobTitle: string;
   name: string;
   phone: string;
+  image:string
 }
