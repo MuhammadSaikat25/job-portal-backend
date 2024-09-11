@@ -1,6 +1,8 @@
-import { jobModel } from "../employer/post-job/job.model";
+import { jobModel } from "../employer/job/job.model";
+import { UserModel } from "../users/user.model";
 import { TAppliedJOb } from "./job.interface";
 import { appliedJobModel } from "./job.model";
+import mongoose from "mongoose";
 
 const getAllJob = async (query: any) => {
   const { jobType, jobPosition, experience, salary } = query;
@@ -13,13 +15,13 @@ const getAllJob = async (query: any) => {
 
   if (salary && salary.includes(",")) {
     const salaryRange = salary.split(",").map(Number);
-    filter.salary = {
-      $gte: salaryRange[0],
-      $lte: salaryRange[1],
-    };
+    // filter.salary = {
+    //   $gte: salaryRange[0],
+    //   $lte: salaryRange[1],
+    // };
   }
-
   const result = await jobModel.find(filter).populate("company");
+
   return result;
 };
 
@@ -60,9 +62,18 @@ const appliedJOb = async (payload: TAppliedJOb) => {
 };
 
 const singleAppliedJob = async (id: string, email: string) => {
-  const allAppliedJob = await appliedJobModel.find();
-  const result=allAppliedJob.find((job)=>job.job.toString()===id)
-  return result;
+  const user = await UserModel.findOne({ email });
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const loginUser = user._id;
+  const allAppliedJob = await appliedJobModel.find({
+    user: new mongoose.Types.ObjectId(loginUser),
+    job: new mongoose.Types.ObjectId(id),
+  });
+
+  return allAppliedJob;
 };
 export const jobService = {
   getAllJob,

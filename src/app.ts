@@ -5,7 +5,7 @@ import { userRoute } from "./app/modules/users/user.route";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { companyRoute } from "./app/modules/employer/create-company/company.route";
-import { jobRoute } from "./app/modules/employer/post-job/job.route";
+import { jobRoute } from "./app/modules/employer/job/job.route";
 import { candidateProfileRoute } from "./app/modules/candidate/create-profile/profile.route";
 import { resumeRouter } from "./app/modules/candidate/resume/resume.route";
 import { jobRouter } from "./app/modules/jobs/job.route";

@@ -5,17 +5,17 @@ const appliedJobSchema = new Schema<TAppliedJOb>({
   job:{
     type: Schema.Types.ObjectId,
       required: true,
-      ref: "jobs",
+      ref: "job",
   },
   resume:{
     type: Schema.Types.ObjectId,
       required: true,
-      ref: "resumes",
+      ref: "resume",
   },
   user:{
     type: Schema.Types.ObjectId,
       required: true,
-      ref: "users",
+      ref: "user",
   }
 });
 
