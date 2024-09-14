@@ -2,21 +2,26 @@ import { model, Schema } from "mongoose";
 import { TAppliedJOb } from "./job.interface";
 
 const appliedJobSchema = new Schema<TAppliedJOb>({
-  job:{
+  job: {
     type: Schema.Types.ObjectId,
-      required: true,
-      ref: "job",
+    required: true,
+    ref: "job",
   },
-  resume:{
+  resume: {
     type: Schema.Types.ObjectId,
-      required: true,
-      ref: "resume",
+    required: true,
+    ref: "resume",
   },
-  user:{
+  user: {
     type: Schema.Types.ObjectId,
-      required: true,
-      ref: "user",
-  }
+    required: true,
+    ref: "user",
+  },
+  applicationStatus: {
+    type: String,
+    enum: ["rejected", "approved", "pending"],
+    default: "pending",
+  },
 });
 
-export const appliedJobModel=model('appliedJOb',appliedJobSchema)
+export const appliedJobModel = model("appliedJOb", appliedJobSchema);

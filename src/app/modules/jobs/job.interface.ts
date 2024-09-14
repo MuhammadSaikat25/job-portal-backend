@@ -5,4 +5,5 @@ export interface TAppliedJOb {
   user: Types.ObjectId;
   resume: Types.ObjectId;
   job: Types.ObjectId;
+  applicationStatus:"rejected" | 'approved'| "pending"
 }

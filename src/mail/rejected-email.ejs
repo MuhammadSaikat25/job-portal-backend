@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .container {
+        width: 80%;
+        margin: 0 auto;
+        background: rebeccapurple;
+        padding: 12px;
+      }
+      .header {
+        text-align: center;
+        padding: 20px 0;
+      }
+      .content {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 5px;
+      }
+      .order-details {
+        margin: 20px 0;
+      }
+      .order-details th,
+      .order-details td {
+        padding: 10px;
+        text-align: left;
+      }
+      .footer {
+        text-align: center;
+        padding: 10px 0;
+        margin-top: 20px;
+        border-top: 1px solid #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Rejected Job Application</h1>
+      </div>
+      <div class="content">
+        <p>Dear <%= response.candidateName %>,</p>
+        <p>
+          Thank you for your interest in the Job at <%= response.companyName %>.
+          After carefully reviewing your application, we regret to inform you
+          that we have decided to move forward with other candidates at this
+          time.
+        </p>
+
+        <p>
+          If you have any questions or concerns, please do not hesitate to
+          contact us.
+        </p>
+        <p>Thank you for shopping with us!</p>
+      </div>
+      <div class="footer">
+        <p>
+          &copy; 2024 Your <%= response.companyName %>. All rights reserved.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
