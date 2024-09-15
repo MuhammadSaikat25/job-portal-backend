@@ -37,12 +37,13 @@ const getAllApplicants = async (email: string) => {
 
   return myApplicants;
 };
-
 const getCompanyAllJob = async (email: string) => {
   const getCompany = await CompanyModal.findOne({ email });
-  const allJob = await jobModel.find();
+  const allJob = await jobModel.find().populate("company");
   const companyId = getCompany?._id.toString();
-  const result = allJob.filter((job) => job.company.toString() === companyId);
+  const result = allJob.filter(
+    (job) => job.company._id.toString() === companyId
+  );
   return result;
 };
 
@@ -114,10 +115,19 @@ const rejectApplication = async (id: string, companyEmail: string) => {
   });
   return result;
 };
+const updateJob = async (playLoad: TJob, id: string) => {
+  const result = await jobModel.findByIdAndUpdate(
+    id,
+    { ...playLoad },
+    { new: true, upsert: true, runValidators: true }
+  );
+  return result;
+};
 export const jobService = {
   createJob,
   getAllApplicants,
   getCompanyAllJob,
   approvedApplication,
   rejectApplication,
+  updateJob,
 };

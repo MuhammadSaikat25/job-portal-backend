@@ -90,10 +90,27 @@ const rejectApplication: RequestHandler = async (req: TRequest, res, next) => {
     });
   }
 };
+
+const updateJob: RequestHandler = async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    const result = await jobService.updateJob(req.body, id);
+    res.status(httpStatus.OK).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    res.status(httpStatus.BAD_REQUEST).json({
+      success: true,
+      data: error,
+    });
+  }
+};
 export const jobController = {
   createJob,
   getAllApplicants,
   getCompanyAllJob,
   approvedApplication,
   rejectApplication,
+  updateJob,
 };

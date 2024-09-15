@@ -24,4 +24,9 @@ route.put(
   authValidation("employer"),
   jobController.rejectApplication
 );
+route.put(
+  "/updateJob/:id",
+  authValidation("employer"),
+  jobController.updateJob
+);
 export const jobRoute = route;
