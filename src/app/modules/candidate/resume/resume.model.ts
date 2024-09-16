@@ -22,18 +22,23 @@ const projectSchema = new Schema({
   description: { type: String, required: true },
 });
 
-const resumeSchema = new Schema<TResume>({
-  email: String,
-  description: String,
-  candidateProfile: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: "candidateProfile",
+const resumeSchema = new Schema<TResume>(
+  {
+    email: String,
+    description: String,
+    candidateProfile: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "candidateProfile",
+    },
+    skill: [String],
+    education: [educationSchema],
+    works: [worksSchema],
+    project: [projectSchema],
   },
-  skill: [String],
-  education: [educationSchema],
-  works: [worksSchema],
-  project: [projectSchema],
-});
+  {
+    timestamps: true,
+  }
+);
 
 export const ResumeModel = model("resume", resumeSchema);

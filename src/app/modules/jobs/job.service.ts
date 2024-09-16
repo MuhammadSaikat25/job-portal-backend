@@ -75,9 +75,26 @@ const singleAppliedJob = async (id: string, email: string) => {
 
   return allAppliedJob;
 };
+const getAllAppliedJob = async (email: string) => {
+  const getCandidate = await UserModel.findOne({ email });
+  const getCandidateApplied = await appliedJobModel
+    .find({
+      user: getCandidate?._id,
+    })
+    .populate("resume")
+    .populate({
+      path: "job",
+      populate: {
+        path: "company",
+      },
+    });
+
+  return getCandidateApplied;
+};
 export const jobService = {
   getAllJob,
   getSingleJob,
   appliedJOb,
   singleAppliedJob,
+  getAllAppliedJob,
 };
