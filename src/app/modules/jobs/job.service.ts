@@ -82,6 +82,7 @@ const getAllAppliedJob = async (email: string) => {
       user: getCandidate?._id,
     })
     .populate("resume")
+    .populate("user")
     .populate({
       path: "job",
       populate: {

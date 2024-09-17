@@ -11,5 +11,5 @@ router.post(
   userController.createUser
 );
 router.post("/login-user", userController.logInUser);
-
+router.get('/get-all-user',userController.getAllUser)
 export const userRoute = router;
