@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.companyRoute = void 0;
+const express_1 = require("express");
+const auth_1 = require("../../../middlewares/auth");
+const company_controller_1 = require("./company.controller");
+const compnay_validation_1 = require("./compnay.validation");
+const reqValidation_1 = require("../../../middlewares/reqValidation");
+const user_const_1 = require("../../users/user.const");
+const route = (0, express_1.Router)();
+route.put("/create-company", (0, auth_1.authValidation)(user_const_1.USER_ROLE.employer), (0, reqValidation_1.validateData)(compnay_validation_1.companySchema), company_controller_1.companyController.createCompany);
+route.get('/get-my-company', (0, auth_1.authValidation)('employer'), company_controller_1.companyController.getMyCompany);
+exports.companyRoute = route;

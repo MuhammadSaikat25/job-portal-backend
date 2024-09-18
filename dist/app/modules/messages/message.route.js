@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.messageRouter = void 0;
+const express_1 = require("express");
+const auth_1 = require("../../middlewares/auth");
+const message_controller_1 = require("./message.controller");
+const route = (0, express_1.Router)();
+route.post("/send-message/:id", (0, auth_1.authValidation)("candidate", "employer"), message_controller_1.messageController.sendMessage);
+route.get("/get-massage/:id", (0, auth_1.authValidation)("candidate", "employer"), message_controller_1.messageController.getMessages);
+exports.messageRouter = route;

@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.candidateProfileRoute = void 0;
+const express_1 = require("express");
+const auth_1 = require("../../../middlewares/auth");
+const profile_controller_1 = require("./profile.controller");
+const route = (0, express_1.Router)();
+route.put('/candidate-profile', (0, auth_1.authValidation)('candidate'), profile_controller_1.candidateProfileController.createCandidateProfile);
+route.get('/candidate-profile', (0, auth_1.authValidation)('candidate'), profile_controller_1.candidateProfileController.getCandidateProfile);
+exports.candidateProfileRoute = route;
