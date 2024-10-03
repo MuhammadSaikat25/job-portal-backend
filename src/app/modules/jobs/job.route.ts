@@ -9,4 +9,5 @@ route.get('/job-details/:id',jobController.getSingleJOb)
 route.post('/applied-job',authValidation('candidate'),jobController.appliedJob)
 route.get('/get-applied-job/:id',authValidation('candidate'),jobController.singleAppliedJob)
 route.get('/get-applied-job',authValidation('candidate'),jobController.getAllAppliedJob)
+route.get('/popular-job',jobController.popularJob)
 export const jobRouter = route;

@@ -92,10 +92,19 @@ const getAllAppliedJob = async (email: string) => {
 
   return getCandidateApplied;
 };
+const popularJob = async () => {
+  const result = await jobModel.find().populate("company");
+  const popularJob = result
+    .sort((a, b) => Number(b.applied) - Number(a.applied))
+    .slice(0, 6);
+  return popularJob;
+};
+
 export const jobService = {
   getAllJob,
   getSingleJob,
   appliedJOb,
   singleAppliedJob,
   getAllAppliedJob,
+  popularJob,
 };
