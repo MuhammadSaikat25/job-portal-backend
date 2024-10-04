@@ -5,24 +5,36 @@ import { appliedJobModel } from "./job.model";
 import mongoose from "mongoose";
 
 const getAllJob = async (query: any) => {
-  const { jobType, jobPosition, experience, salary } = query;
+  const { jobType, jobPosition, experience, salary, limit, page = 1 } = query;
 
   const filter: any = {};
 
+  // Apply filters
   if (jobType) filter.jobType = new RegExp(jobType, "i");
   if (jobPosition) filter.position = new RegExp(jobPosition, "i");
   if (experience) filter.experience = experience;
 
-  if (salary && salary.includes(",")) {
-    const salaryRange = salary.split(",").map(Number);
-    // filter.salary = {
-    //   $gte: salaryRange[0],
-    //   $lte: salaryRange[1],
-    // };
-  }
-  const result = await jobModel.find(filter).populate("company");
+  // Filter based on salary range
+  // if (salary && salary.length === 2) {
+  //   filter.salary = {
+  //     $gte: salary[0],
+  //     $lte: salary[1],
+  //   };
+  // }
 
-  return result;
+  const skip = (page - 1) * limit;
+
+  const totalJob = await jobModel.find();
+  const result = await jobModel
+    .find(filter)
+    .populate("company")
+    .skip(skip) 
+    .limit(limit); 
+  const data = {
+    result,
+    totalJob: totalJob?.length,
+  };
+  return data;
 };
 
 const getSingleJob = async (id: string) => {
