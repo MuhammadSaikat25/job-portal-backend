@@ -93,10 +93,26 @@ const getAllAppliedJob = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         });
     }
 });
+const popularJob = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const result = yield job_service_1.jobService.popularJob();
+        res.status(http_status_1.default.OK).json({
+            success: true,
+            data: result,
+        });
+    }
+    catch (error) {
+        res.status(http_status_1.default.BAD_REQUEST).json({
+            success: false,
+            data: error,
+        });
+    }
+});
 exports.jobController = {
     getAllJob,
     getSingleJOb,
     appliedJob,
     singleAppliedJob,
     getAllAppliedJob,
+    popularJob,
 };

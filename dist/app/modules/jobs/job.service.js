@@ -18,23 +18,34 @@ const user_model_1 = require("../users/user.model");
 const job_model_2 = require("./job.model");
 const mongoose_1 = __importDefault(require("mongoose"));
 const getAllJob = (query) => __awaiter(void 0, void 0, void 0, function* () {
-    const { jobType, jobPosition, experience, salary } = query;
+    const { jobType, jobPosition, experience, salary, limit, page = 1 } = query;
     const filter = {};
+    // Apply filters
     if (jobType)
         filter.jobType = new RegExp(jobType, "i");
     if (jobPosition)
         filter.position = new RegExp(jobPosition, "i");
     if (experience)
         filter.experience = experience;
-    if (salary && salary.includes(",")) {
-        const salaryRange = salary.split(",").map(Number);
-        // filter.salary = {
-        //   $gte: salaryRange[0],
-        //   $lte: salaryRange[1],
-        // };
-    }
-    const result = yield job_model_1.jobModel.find(filter).populate("company");
-    return result;
+    // Filter based on salary range
+    // if (salary && salary.length === 2) {
+    //   filter.salary = {
+    //     $gte: salary[0],
+    //     $lte: salary[1],
+    //   };
+    // }
+    const skip = (page - 1) * limit;
+    const totalJob = yield job_model_1.jobModel.find();
+    const result = yield job_model_1.jobModel
+        .find(filter)
+        .populate("company")
+        .skip(skip)
+        .limit(limit);
+    const data = {
+        result,
+        totalJob: totalJob === null || totalJob === void 0 ? void 0 : totalJob.length,
+    };
+    return data;
 });
 const getSingleJob = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield job_model_1.jobModel.findById(id).populate("company");
@@ -90,10 +101,18 @@ const getAllAppliedJob = (email) => __awaiter(void 0, void 0, void 0, function* 
     });
     return getCandidateApplied;
 });
+const popularJob = () => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield job_model_1.jobModel.find().populate("company");
+    const popularJob = result
+        .sort((a, b) => Number(b.applied) - Number(a.applied))
+        .slice(0, 6);
+    return popularJob;
+});
 exports.jobService = {
     getAllJob,
     getSingleJob,
     appliedJOb,
     singleAppliedJob,
     getAllAppliedJob,
+    popularJob,
 };

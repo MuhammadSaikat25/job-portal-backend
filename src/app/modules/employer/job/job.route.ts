@@ -29,4 +29,9 @@ route.put(
   authValidation("employer"),
   jobController.updateJob
 );
+route.get(
+  "/companyOverview",
+  authValidation("employer"),
+  jobController.companyOverview
+);
 export const jobRoute = route;

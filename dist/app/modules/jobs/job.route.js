@@ -10,4 +10,5 @@ route.get('/job-details/:id', job_controller_1.jobController.getSingleJOb);
 route.post('/applied-job', (0, auth_1.authValidation)('candidate'), job_controller_1.jobController.appliedJob);
 route.get('/get-applied-job/:id', (0, auth_1.authValidation)('candidate'), job_controller_1.jobController.singleAppliedJob);
 route.get('/get-applied-job', (0, auth_1.authValidation)('candidate'), job_controller_1.jobController.getAllAppliedJob);
+route.get('/popular-job', job_controller_1.jobController.popularJob);
 exports.jobRouter = route;

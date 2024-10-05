@@ -110,6 +110,22 @@ const updateJob = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         });
     }
 });
+const companyOverview = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const companyEmail = req === null || req === void 0 ? void 0 : req.user.email;
+    try {
+        const result = yield job_service_1.jobService.companyOverview(companyEmail);
+        res.status(http_status_1.default.OK).json({
+            success: true,
+            data: result,
+        });
+    }
+    catch (error) {
+        res.status(http_status_1.default.BAD_REQUEST).json({
+            success: false,
+            data: error,
+        });
+    }
+});
 exports.jobController = {
     createJob,
     getAllApplicants,
@@ -117,4 +133,5 @@ exports.jobController = {
     approvedApplication,
     rejectApplication,
     updateJob,
+    companyOverview
 };

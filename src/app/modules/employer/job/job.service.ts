@@ -123,6 +123,32 @@ const updateJob = async (playLoad: TJob, id: string) => {
   );
   return result;
 };
+const companyOverview = async (email: string) => {
+  const allJob = await jobModel.find().populate("company");
+  const myAllJob = allJob.filter((job: any) => job.company.email === email);
+  const getAllApplicants = await appliedJobModel.find().populate({
+    path: "job",
+    populate: {
+      path: "company",
+    },
+  });
+  const myApplicants = getAllApplicants.filter(
+    (job: any) => job.job.company.email === email
+  );
+  const approved = myApplicants.filter(
+    (application) => application.applicationStatus === "approved"
+  );
+  const rejected = myApplicants.filter(
+    (application) => application.applicationStatus === "rejected"
+  );
+
+  return {
+    myAllJob,
+    myApplicants,
+    approved,
+    rejected,
+  };
+};
 export const jobService = {
   createJob,
   getAllApplicants,
@@ -130,4 +156,5 @@ export const jobService = {
   approvedApplication,
   rejectApplication,
   updateJob,
+  companyOverview,
 };

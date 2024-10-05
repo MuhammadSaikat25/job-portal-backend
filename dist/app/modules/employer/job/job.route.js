@@ -11,4 +11,5 @@ route.get("/get-companyAllJob", (0, auth_1.authValidation)("employer"), job_cont
 route.put("/approved/:id", (0, auth_1.authValidation)("employer"), job_controller_1.jobController.approvedApplication);
 route.put("/reject/:id", (0, auth_1.authValidation)("employer"), job_controller_1.jobController.rejectApplication);
 route.put("/updateJob/:id", (0, auth_1.authValidation)("employer"), job_controller_1.jobController.updateJob);
+route.get("/companyOverview", (0, auth_1.authValidation)("employer"), job_controller_1.jobController.companyOverview);
 exports.jobRoute = route;

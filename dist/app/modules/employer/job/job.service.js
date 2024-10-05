@@ -114,6 +114,25 @@ const updateJob = (playLoad, id) => __awaiter(void 0, void 0, void 0, function* 
     const result = yield job_model_2.jobModel.findByIdAndUpdate(id, Object.assign({}, playLoad), { new: true, upsert: true, runValidators: true });
     return result;
 });
+const companyOverview = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    const allJob = yield job_model_2.jobModel.find().populate("company");
+    const myAllJob = allJob.filter((job) => job.company.email === email);
+    const getAllApplicants = yield job_model_1.appliedJobModel.find().populate({
+        path: "job",
+        populate: {
+            path: "company",
+        },
+    });
+    const myApplicants = getAllApplicants.filter((job) => job.job.company.email === email);
+    const approved = myApplicants.filter((application) => application.applicationStatus === "approved");
+    const rejected = myApplicants.filter((application) => application.applicationStatus === "rejected");
+    return {
+        myAllJob,
+        myApplicants,
+        approved,
+        rejected,
+    };
+});
 exports.jobService = {
     createJob,
     getAllApplicants,
@@ -121,4 +140,5 @@ exports.jobService = {
     approvedApplication,
     rejectApplication,
     updateJob,
+    companyOverview,
 };
