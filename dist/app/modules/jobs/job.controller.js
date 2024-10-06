@@ -108,6 +108,23 @@ const popularJob = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         });
     }
 });
+const candidateOverview = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const email = (_a = req.user) === null || _a === void 0 ? void 0 : _a.email;
+    try {
+        const result = yield job_service_1.jobService.candidateOverview(email);
+        res.status(http_status_1.default.OK).json({
+            success: true,
+            data: result,
+        });
+    }
+    catch (error) {
+        res.status(http_status_1.default.BAD_REQUEST).json({
+            success: true,
+            data: error,
+        });
+    }
+});
 exports.jobController = {
     getAllJob,
     getSingleJOb,
@@ -115,4 +132,5 @@ exports.jobController = {
     singleAppliedJob,
     getAllAppliedJob,
     popularJob,
+    candidateOverview
 };

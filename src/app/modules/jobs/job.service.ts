@@ -1,6 +1,6 @@
 import { jobModel } from "../employer/job/job.model";
 import { UserModel } from "../users/user.model";
-import { TAppliedJOb } from "./job.interface";
+import { AppliedJob, TAppliedJOb } from "./job.interface";
 import { appliedJobModel } from "./job.model";
 import mongoose from "mongoose";
 
@@ -28,8 +28,8 @@ const getAllJob = async (query: any) => {
   const result = await jobModel
     .find(filter)
     .populate("company")
-    .skip(skip) 
-    .limit(limit); 
+    .skip(skip)
+    .limit(limit);
   const data = {
     result,
     totalJob: totalJob?.length,
@@ -112,6 +112,55 @@ const popularJob = async () => {
   return popularJob;
 };
 
+const candidateOverview = async (email: string) => {
+  const allAppliedJob = await appliedJobModel.find().populate("user");
+
+  const myAppliedJob = allAppliedJob.filter(
+    (applied: any) => applied.user.email === email
+  );
+
+  const approved = myAppliedJob.filter(
+    (applied) => applied.applicationStatus === "approved"
+  );
+  const pending = myAppliedJob.filter(
+    (applied) => applied.applicationStatus === "pending"
+  );
+  const rejected = myAppliedJob.filter(
+    (applied) => applied.applicationStatus === "rejected"
+  );
+  const applications = myAppliedJob;
+
+  const analytics: { [key: string]: number } = {};
+
+  for (let month = 0; month < 12; month++) {
+    const now = new Date();
+    const date = new Date(now.getFullYear(), now.getMonth() - month, 1);
+    const yearMonth = `${date.getFullYear()}-${(date.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}`;
+    analytics[yearMonth] = 0;
+  }
+
+  applications.forEach((app: any) => {
+    const createdAt = new Date(app.createdAt);
+
+    const yearMonth = `${createdAt.getFullYear()}-${(createdAt.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}`;
+
+    if (analytics[yearMonth] !== undefined) {
+      analytics[yearMonth]++;
+    }
+  });
+
+  return {
+    myAppliedJob,
+    approved,
+    pending,
+    rejected,
+    analytics,
+  };
+};
 export const jobService = {
   getAllJob,
   getSingleJob,
@@ -119,4 +168,5 @@ export const jobService = {
   singleAppliedJob,
   getAllAppliedJob,
   popularJob,
+  candidateOverview,
 };

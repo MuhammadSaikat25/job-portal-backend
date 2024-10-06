@@ -96,6 +96,21 @@ const popularJob: RequestHandler = async (req, res, next) => {
     });
   }
 };
+const candidateOverview: RequestHandler = async (req: TRequest, res, next) => {
+  const email = req.user?.email;
+  try {
+    const result = await jobService.candidateOverview(email);
+    res.status(httpStatus.OK).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    res.status(httpStatus.BAD_REQUEST).json({
+      success: true,
+      data: error,
+    });
+  }
+};
 export const jobController = {
   getAllJob,
   getSingleJOb,
@@ -103,4 +118,5 @@ export const jobController = {
   singleAppliedJob,
   getAllAppliedJob,
   popularJob,
+  candidateOverview
 };

@@ -108,6 +108,48 @@ const popularJob = () => __awaiter(void 0, void 0, void 0, function* () {
         .slice(0, 6);
     return popularJob;
 });
+const candidateOverview = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    // Fetch all applied jobs, populate the 'user' field, and use .lean() to get plain objects
+    const allAppliedJob = yield job_model_2.appliedJobModel
+        .find()
+        .populate("user")
+        .lean() // Convert to plain JS objects, no Mongoose document wrapper
+        .exec();
+    // Filter jobs by user's email
+    const myAppliedJob = allAppliedJob.filter((applied) => applied.user.email === email);
+    // Filter applications based on their status
+    const approved = myAppliedJob.filter((applied) => applied.applicationStatus === "approved");
+    const pending = myAppliedJob.filter((applied) => applied.applicationStatus === "pending");
+    const rejected = myAppliedJob.filter((applied) => applied.applicationStatus === "rejected");
+    const applications = myAppliedJob;
+    // Initialize an object to hold the count of applications for the last 12 months
+    const analytics = {};
+    // Initialize analytics for all 12 months
+    for (let month = 0; month < 12; month++) {
+        const now = new Date();
+        const date = new Date(now.getFullYear(), now.getMonth() - month, 1);
+        const yearMonth = `${date.getFullYear()}-${(date.getMonth() + 1)
+            .toString()
+            .padStart(2, "0")}`;
+        analytics[yearMonth] = 0; // Set count to 0 initially
+    }
+    applications.forEach((app) => {
+        const createdAt = new Date(app.createdAt);
+        const yearMonth = `${createdAt.getFullYear()}-${(createdAt.getMonth() + 1)
+            .toString()
+            .padStart(2, "0")}`;
+        if (analytics[yearMonth] !== undefined) {
+            analytics[yearMonth]++;
+        }
+    });
+    return {
+        myAppliedJob,
+        approved,
+        pending,
+        rejected,
+        analytics,
+    };
+});
 exports.jobService = {
     getAllJob,
     getSingleJob,
@@ -115,4 +157,5 @@ exports.jobService = {
     singleAppliedJob,
     getAllAppliedJob,
     popularJob,
+    candidateOverview,
 };
