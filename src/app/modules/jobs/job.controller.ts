@@ -111,6 +111,22 @@ const candidateOverview: RequestHandler = async (req: TRequest, res, next) => {
     });
   }
 };
+
+const searchJob: RequestHandler = async (req, res, next) => {
+  const query = req.query;
+  try {
+    const result = await jobService.searchJob(query);
+    res.status(httpStatus.OK).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    res.status(httpStatus.BAD_REQUEST).json({
+      success: true,
+      data: error,
+    });
+  }
+};
 export const jobController = {
   getAllJob,
   getSingleJOb,
@@ -118,5 +134,6 @@ export const jobController = {
   singleAppliedJob,
   getAllAppliedJob,
   popularJob,
-  candidateOverview
+  searchJob,
+  candidateOverview,
 };

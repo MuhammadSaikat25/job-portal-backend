@@ -5,36 +5,66 @@ import { appliedJobModel } from "./job.model";
 import mongoose from "mongoose";
 
 const getAllJob = async (query: any) => {
-  const { jobType, jobPosition, experience, salary, limit, page = 1 } = query;
-
+  const {
+    jobType,
+    jobPosition,
+    experience,
+    salary,
+    limit = 10,
+    page = 1,
+  } = query || {};
   const filter: any = {};
 
-  // Apply filters
-  if (jobType) filter.jobType = new RegExp(jobType, "i");
-  if (jobPosition) filter.position = new RegExp(jobPosition, "i");
-  if (experience) filter.experience = experience;
+  if (jobType) {
+    filter.jobType = {
+      $in: jobType
+        .split(",")
+        .map((type: string) => new RegExp(type.trim(), "i")),
+    };
+  }
 
-  // Filter based on salary range
-  // if (salary && salary.length === 2) {
-  //   filter.salary = {
-  //     $gte: salary[0],
-  //     $lte: salary[1],
-  //   };
-  // }
+  if (jobPosition) {
+    filter.position = {
+      $in: jobPosition
+        .split(",")
+        .map((position: string) => new RegExp(position.trim(), "i")),
+    };
+  }
 
-  const skip = (page - 1) * limit;
+  if (experience) {
+    filter.experience = {
+      $in: experience.split(",").map((exp: string) => exp.trim()),
+    };
+  }
 
-  const totalJob = await jobModel.find();
+  if (salary) {
+    const salaryArray = salary.split(",").map(Number);
+    if (
+      salaryArray.length === 2 &&
+      !isNaN(salaryArray[0]) &&
+      !isNaN(salaryArray[1])
+    ) {
+      filter.salary = {
+        $gte: salaryArray[0],
+        $lte: salaryArray[1],
+      };
+    }
+  }
+
+  const skip = (page - 1) * (limit || 10);
+
+  const totalJob = await jobModel.countDocuments();
+
   const result = await jobModel
     .find(filter)
     .populate("company")
     .skip(skip)
     .limit(limit);
-  const data = {
+
+  return {
     result,
-    totalJob: totalJob?.length,
+    totalJob,
   };
-  return data;
 };
 
 const getSingleJob = async (id: string) => {
@@ -161,6 +191,32 @@ const candidateOverview = async (email: string) => {
     analytics,
   };
 };
+
+const searchJob = async (query: any) => {
+  const { title, location } = query;
+
+  const searchConditions: any[] = [];
+
+  if (title && typeof title === "string") {
+    searchConditions.push({ title: { $regex: title, $options: "i" } });
+  }
+
+  if (location && typeof location === "string") {
+    searchConditions.push({ country: { $regex: location, $options: "i" } });
+  }
+
+  if (searchConditions.length > 0) {
+    const result = await jobModel
+      .find({
+        $or: searchConditions,
+      })
+      .populate("company");
+    return result;
+  } else {
+    return [];
+  }
+};
+
 export const jobService = {
   getAllJob,
   getSingleJob,
@@ -169,4 +225,5 @@ export const jobService = {
   getAllAppliedJob,
   popularJob,
   candidateOverview,
+  searchJob,
 };

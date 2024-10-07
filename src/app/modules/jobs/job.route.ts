@@ -22,5 +22,10 @@ route.get(
   jobController.getAllAppliedJob
 );
 route.get("/popular-job", jobController.popularJob);
-route.get("/overview", authValidation("candidate"), jobController.candidateOverview);
+route.get(
+  "/overview",
+  authValidation("candidate"),
+  jobController.candidateOverview
+);
+route.get("/search-job", jobController.searchJob);
 export const jobRouter = route;

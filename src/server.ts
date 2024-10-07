@@ -7,7 +7,6 @@ async function main() {
   await mongoose.connect(config.db as string);
   app.listen(config.port!, () => {
     console.log(`Example app listening on port ${config.port!}`);
-    console.log("i have to solve get all job problem (filter by salary)");
   });
 }
 main().catch((err) => console.log(err));
