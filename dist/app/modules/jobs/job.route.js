@@ -12,4 +12,5 @@ route.get("/get-applied-job/:id", (0, auth_1.authValidation)("candidate"), job_c
 route.get("/get-applied-job", (0, auth_1.authValidation)("candidate"), job_controller_1.jobController.getAllAppliedJob);
 route.get("/popular-job", job_controller_1.jobController.popularJob);
 route.get("/overview", (0, auth_1.authValidation)("candidate"), job_controller_1.jobController.candidateOverview);
+route.get("/search-job", job_controller_1.jobController.searchJob);
 exports.jobRouter = route;

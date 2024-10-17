@@ -18,34 +18,49 @@ const user_model_1 = require("../users/user.model");
 const job_model_2 = require("./job.model");
 const mongoose_1 = __importDefault(require("mongoose"));
 const getAllJob = (query) => __awaiter(void 0, void 0, void 0, function* () {
-    const { jobType, jobPosition, experience, salary, limit, page = 1 } = query;
+    const { jobType, jobPosition, experience, salary, limit = 10, page = 1, } = query || {};
     const filter = {};
-    // Apply filters
-    if (jobType)
-        filter.jobType = new RegExp(jobType, "i");
-    if (jobPosition)
-        filter.position = new RegExp(jobPosition, "i");
-    if (experience)
-        filter.experience = experience;
-    // Filter based on salary range
-    // if (salary && salary.length === 2) {
-    //   filter.salary = {
-    //     $gte: salary[0],
-    //     $lte: salary[1],
-    //   };
-    // }
-    const skip = (page - 1) * limit;
-    const totalJob = yield job_model_1.jobModel.find();
+    if (jobType) {
+        filter.jobType = {
+            $in: jobType
+                .split(",")
+                .map((type) => new RegExp(type.trim(), "i")),
+        };
+    }
+    if (jobPosition) {
+        filter.position = {
+            $in: jobPosition
+                .split(",")
+                .map((position) => new RegExp(position.trim(), "i")),
+        };
+    }
+    if (experience) {
+        filter.experience = {
+            $in: experience.split(",").map((exp) => exp.trim()),
+        };
+    }
+    if (salary) {
+        const salaryArray = salary.split(",").map(Number);
+        if (salaryArray.length === 2 &&
+            !isNaN(salaryArray[0]) &&
+            !isNaN(salaryArray[1])) {
+            filter.salary = {
+                $gte: salaryArray[0],
+                $lte: salaryArray[1],
+            };
+        }
+    }
+    const skip = (page - 1) * (limit || 10);
+    const totalJob = yield job_model_1.jobModel.countDocuments();
     const result = yield job_model_1.jobModel
         .find(filter)
         .populate("company")
         .skip(skip)
         .limit(limit);
-    const data = {
+    return {
         result,
-        totalJob: totalJob === null || totalJob === void 0 ? void 0 : totalJob.length,
+        totalJob,
     };
-    return data;
 });
 const getSingleJob = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield job_model_1.jobModel.findById(id).populate("company");
@@ -54,7 +69,7 @@ const getSingleJob = (id) => __awaiter(void 0, void 0, void 0, function* () {
     }
     const jobTitle = new RegExp(result.title, "i");
     const Jobs = yield job_model_1.jobModel.find({ title: jobTitle }).populate("company");
-    const matchingJobs = Jobs.filter((job) => job._id.toString() == id.toString());
+    const matchingJobs = Jobs.filter((job) => job._id.toString() !== id.toString());
     return {
         singleJob: result,
         matchingJobs,
@@ -109,29 +124,20 @@ const popularJob = () => __awaiter(void 0, void 0, void 0, function* () {
     return popularJob;
 });
 const candidateOverview = (email) => __awaiter(void 0, void 0, void 0, function* () {
-    // Fetch all applied jobs, populate the 'user' field, and use .lean() to get plain objects
-    const allAppliedJob = yield job_model_2.appliedJobModel
-        .find()
-        .populate("user")
-        .lean() // Convert to plain JS objects, no Mongoose document wrapper
-        .exec();
-    // Filter jobs by user's email
+    const allAppliedJob = yield job_model_2.appliedJobModel.find().populate("user");
     const myAppliedJob = allAppliedJob.filter((applied) => applied.user.email === email);
-    // Filter applications based on their status
     const approved = myAppliedJob.filter((applied) => applied.applicationStatus === "approved");
     const pending = myAppliedJob.filter((applied) => applied.applicationStatus === "pending");
     const rejected = myAppliedJob.filter((applied) => applied.applicationStatus === "rejected");
     const applications = myAppliedJob;
-    // Initialize an object to hold the count of applications for the last 12 months
     const analytics = {};
-    // Initialize analytics for all 12 months
     for (let month = 0; month < 12; month++) {
         const now = new Date();
         const date = new Date(now.getFullYear(), now.getMonth() - month, 1);
         const yearMonth = `${date.getFullYear()}-${(date.getMonth() + 1)
             .toString()
             .padStart(2, "0")}`;
-        analytics[yearMonth] = 0; // Set count to 0 initially
+        analytics[yearMonth] = 0;
     }
     applications.forEach((app) => {
         const createdAt = new Date(app.createdAt);
@@ -150,6 +156,27 @@ const candidateOverview = (email) => __awaiter(void 0, void 0, void 0, function*
         analytics,
     };
 });
+const searchJob = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    const { title, location } = query;
+    const searchConditions = [];
+    if (title && typeof title === "string") {
+        searchConditions.push({ title: { $regex: title, $options: "i" } });
+    }
+    if (location && typeof location === "string") {
+        searchConditions.push({ country: { $regex: location, $options: "i" } });
+    }
+    if (searchConditions.length > 0) {
+        const result = yield job_model_1.jobModel
+            .find({
+            $or: searchConditions,
+        })
+            .populate("company");
+        return result;
+    }
+    else {
+        return [];
+    }
+});
 exports.jobService = {
     getAllJob,
     getSingleJob,
@@ -158,4 +185,5 @@ exports.jobService = {
     getAllAppliedJob,
     popularJob,
     candidateOverview,
+    searchJob,
 };

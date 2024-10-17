@@ -75,8 +75,9 @@ const getSingleJob = async (id: string) => {
 
   const jobTitle = new RegExp(result.title, "i");
   const Jobs = await jobModel.find({ title: jobTitle }).populate("company");
+
   const matchingJobs = Jobs.filter(
-    (job: any) => job._id.toString() == id.toString()
+    (job: any) => job._id.toString() !== id.toString()
   );
 
   return {

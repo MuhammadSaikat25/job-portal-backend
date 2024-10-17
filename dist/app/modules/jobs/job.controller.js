@@ -125,6 +125,22 @@ const candidateOverview = (req, res, next) => __awaiter(void 0, void 0, void 0, 
         });
     }
 });
+const searchJob = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const query = req.query;
+    try {
+        const result = yield job_service_1.jobService.searchJob(query);
+        res.status(http_status_1.default.OK).json({
+            success: true,
+            data: result,
+        });
+    }
+    catch (error) {
+        res.status(http_status_1.default.BAD_REQUEST).json({
+            success: true,
+            data: error,
+        });
+    }
+});
 exports.jobController = {
     getAllJob,
     getSingleJOb,
@@ -132,5 +148,6 @@ exports.jobController = {
     singleAppliedJob,
     getAllAppliedJob,
     popularJob,
-    candidateOverview
+    searchJob,
+    candidateOverview,
 };
